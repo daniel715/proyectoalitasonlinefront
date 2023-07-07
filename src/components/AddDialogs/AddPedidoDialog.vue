@@ -10,25 +10,24 @@
           <v-row>
             <v-col cols="12" sm="6" md="8">
               <div style="width: 50%">
-                <DateTimeInput label="Fecha pedido" />
+                <DateTimeInput @input="setFechaPedido" label="Fecha pedido" />
               </div>
               <div style="width: 50%">
-                <DateTimeInput label="Fecha Salida" />
+                <DateTimeInput @input="setFechaSalida" label="Fecha Salida" />
               </div>
               <div style="width: 50%">
-                <DateTimeInput label="Fecha entrega" />
+                <DateTimeInput @input="setFechaEntrega" label="Fecha entrega" />
               </div>
               <v-text-field
                 @keydown.enter="save"
                 autofocus
                 outlined
-                v-model="nombre"
-                @input="input"
+                v-model="editedItem.direccion"
                 label="Direccion"
               ></v-text-field>
               <v-container class="px-0" fluid>
                 <h3>Metodo de pago</h3>
-                <v-radio-group row v-model="radioGroup">
+                <v-radio-group row v-model="editedItem.metodoPago">
                   <v-radio v-for="n in radioItems" :key="n" :label="`${n}`" :value="n"></v-radio>
                 </v-radio-group>
               </v-container>
@@ -36,10 +35,10 @@
                 @keydown.enter="save"
                 autofocus
                 outlined
-                v-model="nombre"
-                @input="input"
+                v-model="editedItem.observacion"
                 label="Observaciones"
               ></v-text-field>
+              <producto-combo />
             </v-col>
           </v-row>
         </v-container>
@@ -57,25 +56,36 @@
 import { defineComponent } from '@vue/composition-api'
 import DateTimeInput from '../inputs/DateTimeInput.vue'
 import { UUID } from 'uuidjs'
+import ProductoCombo from '../combos/ProductoCombo.vue'
 export default defineComponent({
   components: {
     DateTimeInput,
+    ProductoCombo,
   },
   data: () => ({
     radioGroup: '',
     dialog: false,
     editedIndex: -1,
-    nombre: '',
-    radioItems: [
-        'Plin', 'Yape', 'Efectivo'
-    ],
+    radioItems: ['Plin', 'Yape', 'Efectivo'],
     editedItem: {
       id: '',
-      nombre: '',
+      fechaPedido: '',
+      fechaSalida: '',
+      fechaEntrega: '',
+      direccion: '',
+      metodoPago: '',
+      observacion: '',
+      resumen: '',
     },
     defaultItem: {
       id: '',
-      nombre: '',
+      fechaPedido: '',
+      fechaSalida: '',
+      fechaEntrega: '',
+      direccion: '',
+      metodoPago: '',
+      observacion: '',
+      resumen: '',
     },
     entidad: 'categoria',
   }),
@@ -85,9 +95,23 @@ export default defineComponent({
     },
   },
   methods: {
-    input(data) {
-      console.log(data)
-      this.nombre = data
+    setFechaPedido(data) {
+      if (data != null) {
+        console.log(data)
+        this.editedItem.fechaPedido = data
+      }
+    },
+    setFechaSalida(data) {
+      if (data != null) {
+        console.log(data)
+        this.editedItem.fechaSalida = data
+      }
+    },
+    setFechaEntrega(data) {
+      if (data != null) {
+        console.log(data)
+        this.editedItem.fechaEntrega = data
+      }
     },
     async save() {
       console.log(this.editedIndex)
