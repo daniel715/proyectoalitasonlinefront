@@ -1,12 +1,6 @@
 <template>
-  <div
-    :class="`${leftLabel ? 'd-flex flex-row align-center' : ''} date-inputt`"
-  >
-    <label
-      v-if="leftLabel"
-      :class="`v-label ${isDark ? 'theme--dark' : 'theme--light'}`"
-      >{{ label }}</label
-    >
+  <div :class="`${leftLabel ? 'd-flex flex-row align-center' : ''} date-inputt`">
+    <label v-if="leftLabel" :class="`v-label ${isDark ? 'theme--dark' : 'theme--light'}`">{{ label }}</label>
     <v-text-field
       :label="labelComputed"
       v-model="model"
@@ -21,11 +15,9 @@
       @blur="onBlur"
       style=""
       :style="`width: ${width};max-width:${width};`"
-      :class="`${isEditable ? 'd-flex flex-row' : ''} ${
-        left && !isMobile ? 'mr-1' : ''
-      } ${right && !isMobile ? 'ml-1' : ''} ${
-        hideDetail ? 'hide-detail-input' : ''
-      } ${leftLabel ? 'ml-1' : ''} ${
+      :class="`${isEditable ? 'd-flex flex-row' : ''} ${left && !isMobile ? 'mr-1' : ''} ${
+        right && !isMobile ? 'ml-1' : ''
+      } ${hideDetail ? 'hide-detail-input' : ''} ${leftLabel ? 'ml-1' : ''} ${
         noMarginBottom ? 'no-margin-bottom' : ''
       } date-input ${classInput}`"
       :height="height"
@@ -34,25 +26,25 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import rules from "@/mixins/rules.mixin";
-import dates from "@/mixins/dates.mixin";
-import inputs from "@/mixins/inputs.mixin";
+import { mapState } from 'vuex'
+import rules from '@/mixins/rules.mixin'
+import dates from '@/mixins/dates.mixin'
+import inputs from '@/mixins/inputs.mixin'
 export default {
-  name: "DateInput",
+  name: 'DateInput',
   mixins: [rules, dates, inputs],
   props: {
     classInput: {
       type: String,
-      default: "",
+      default: '',
     },
     label: {
       type: String,
-      default: "",
+      default: '',
     },
     value: {
       type: String / Number,
-      default: "",
+      default: '',
     },
     col: {
       type: Number / String,
@@ -70,7 +62,7 @@ export default {
     },
     type: {
       type: String,
-      default: "text",
+      default: 'text',
     },
     /**deshabilita el input */
     disabled: {
@@ -103,7 +95,7 @@ export default {
     },
     width: {
       type: String,
-      default: "126px",
+      default: '126px',
     },
   },
   computed: {
@@ -112,57 +104,57 @@ export default {
     }),
     model: {
       get() {
-        return this.value;
+        return this.value
       },
       set(value) {
-        this.$emit("input", value);
+        this.$emit('input', value)
       },
     },
     labelComputed() {
-      return this.leftLabel ? "" : this.label;
+      return this.leftLabel ? '' : this.label
     },
   },
   data: () => ({
     /* model: "", */
     rulesInput: [],
     editable: false,
-    uniqueId: "id",
+    uniqueId: 'id',
   }),
   watch: {
-    /* model(newVal, oldVal) {
-      this.$emit("input", this.model);
-    }, */
-    /* value(newVal,oldVal){
+    model(newVal, oldVal) {
+      this.$emit('input', this.model)
+    },
+    value(newVal, oldVal) {
       this.model = newVal
-    } */
+    },
     editable(newVal) {
-      if (newVal) this.$emit("editActivated");
-      else this.$emit("editDisabled");
+      if (newVal) this.$emit('editActivated')
+      else this.$emit('editDisabled')
     },
   },
   methods: {
     initRules() {
-      if (this.type == "email") this.rulesInput.push(this.rules.email);
-      if (!this.noRequired) this.rulesInput.push(this.rules.required); //si es requerido
+      if (this.type == 'email') this.rulesInput.push(this.rules.email)
+      if (!this.noRequired) this.rulesInput.push(this.rules.required) //si es requerido
     },
     /**
      * establece fecha actual
      */
     initCurrent() {
-      if (this.current) this.model = this.currentDate;
+      if (this.current) this.model = this.currentDate
     },
     onBlur() {
-      this.$refs.input.isResetting = true;
-      this.$emit("blur");
+      this.$refs.input.isResetting = true
+      this.$emit('blur')
     },
   },
   mounted() {},
   created() {
-    this.model = this.value;
-    this.initRules();
-    this.initCurrent();
+    this.model = this.value
+    this.initRules()
+    this.initCurrent()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
