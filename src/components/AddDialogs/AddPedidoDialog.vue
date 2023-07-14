@@ -18,27 +18,15 @@
               <div style="width: 50%">
                 <DateTimeInput @input="setFechaEntrega" label="Fecha entrega" />
               </div>
-              <v-text-field
-                @keydown.enter="save"
-                autofocus
-                outlined
-                v-model="editedItem.direccion"
-                label="Direccion"
-              ></v-text-field>
-              <v-container class="px-0" fluid>
-                <h3>Metodo de pago</h3>
-                <v-radio-group row v-model="editedItem.metodoPago">
-                  <v-radio v-for="n in radioItems" :key="n" :label="`${n}`" :value="n"></v-radio>
-                </v-radio-group>
-              </v-container>
-              <v-text-field
-                @keydown.enter="save"
-                autofocus
-                outlined
-                v-model="editedItem.observacion"
-                label="Observaciones"
-              ></v-text-field>
-              <producto-combo />
+              <v-text-field outlined v-model="editedItem.direccion" label="Direccion"></v-text-field>
+              <h3>Metodo de pago</h3>
+              <v-radio-group row v-model="editedItem.metodoPago">
+                <v-radio v-for="n in radioItems" :key="n" :label="`${n}`" :value="n"></v-radio>
+              </v-radio-group>
+              <v-text-field outlined v-model="editedItem.observacion" label="Observaciones"></v-text-field>
+              <producto-combo @input="setTotalPedido" />
+
+              <v-text-field type="number" outlined v-model.number="editedItem.montoRecibido" label="Monto Recibido"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -52,11 +40,12 @@
     </v-card>
   </v-dialog>
 </template>
-      <script>
+<script>
 import { defineComponent } from '@vue/composition-api'
 import DateTimeInput from '../inputs/DateTimeInput.vue'
 import { UUID } from 'uuidjs'
 import ProductoCombo from '../combos/ProductoCombo.vue'
+import axiosInstance from "@/plugins/axios";
 export default defineComponent({
   components: {
     DateTimeInput,
@@ -66,28 +55,36 @@ export default defineComponent({
     radioGroup: '',
     dialog: false,
     editedIndex: -1,
-    radioItems: ['Plin', 'Yape', 'Efectivo'],
+    radioItems: ['plin', 'yape', 'efectivo'],
     editedItem: {
-      id: '',
+      pedidoId: '',
       fechaPedido: '',
       fechaSalida: '',
       fechaEntrega: '',
       direccion: '',
       metodoPago: '',
       observacion: '',
-      resumen: '',
+      montoRecibido: 0,
+      totalPagar: '',
+      respuestaPagoApp: null,
+      status: null,
+      direccionIp: null,
     },
     defaultItem: {
-      id: '',
+      pedidoId: '',
       fechaPedido: '',
       fechaSalida: '',
       fechaEntrega: '',
       direccion: '',
       metodoPago: '',
       observacion: '',
-      resumen: '',
+      montoRecibido: 0,
+      totalPagar: '',
+      respuestaPagoApp: null,
+      status: null,
+      direccionIp: null,
     },
-    entidad: 'categoria',
+    entidad: 'pedido',
   }),
   computed: {
     formTitle() {
@@ -123,11 +120,12 @@ export default defineComponent({
         if (respuesta.status == '201') {
         }
       } else {
-        //creando nueva categoria
-        this.editedItem.id = UUID.generate()
-        this.editedItem.nombre = this.nombre
-        let response = await this.$axios.post(this.entidad + '/save', this.editedItem)
+        //creando nuevo pedido
+        this.editedItem.pedidoId = UUID.generate()
+        let response = await axiosInstance.post(this.entidad + '/save', this.editedItem)
         if (response.status == '201') {
+          // ACTUALIZANDO TABLA PEDIDO_PRODUCTO
+          
         }
       }
       this.refresh()
@@ -143,6 +141,9 @@ export default defineComponent({
         this.editedIndex = -1
         this.nombre = ''
       })
+    },
+    setTotalPedido(data) {
+      this.editedItem.totalPagar = data
     },
   },
 })

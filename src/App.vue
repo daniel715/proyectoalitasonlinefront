@@ -29,13 +29,14 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions(['fetchPedidos', 'fetchProductos', 'fetchCategorias', 'fetchPedidosProductos']),
+    ...mapActions(['fetchPedidos', 'fetchProductos', 'fetchCategorias', 'fetchPedidosProductos', 'fetchTotalPorPedido']),
   },
   created() {
     this.fetchPedidos()
     this.fetchProductos()
     this.fetchCategorias()
     this.fetchPedidosProductos()
+    this.fetchTotalPorPedido()
     setTimeout(() => {
       this.isRouterLoaded = true
     }, 500)

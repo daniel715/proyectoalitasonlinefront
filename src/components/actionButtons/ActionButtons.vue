@@ -31,7 +31,9 @@ export default defineComponent({
 
   methods: {
     openVisor() {},
-    editItem() {},
+    editItem() {
+      this.$emit('onEdit')
+    },
     deleteItem() {},
   },
 })

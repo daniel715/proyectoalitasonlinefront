@@ -10,7 +10,7 @@
       :items="items"
       showVisor
     />
-    <add-pedido-dialog ref="addPedidoDialog"/>
+    <add-pedido-dialog ref="addPedidoDialog" />
   </div>
 </template>
 <script>
@@ -21,7 +21,7 @@ import AddPedidoDialog from '../AddDialogs/AddPedidoDialog.vue'
 export default defineComponent({
   components: {
     basicCrud,
-    AddPedidoDialog
+    AddPedidoDialog,
   },
   data: () => ({
     headers: [
@@ -31,7 +31,8 @@ export default defineComponent({
       { text: 'Direccion', value: 'direccion' },
       { text: 'Metodo Pago', value: 'metodoPago' },
       { text: 'Observaciones', value: 'observacion' },
-      { text: 'Resumen', value: 'resumen'},
+      { text: 'Resumen', value: 'resumen' },
+      { text: 'Total', value: 'precioTotal' },
       { text: 'Actions', value: 'actions', align: 'end' },
     ],
     items: [],
@@ -39,7 +40,7 @@ export default defineComponent({
     productosIdArray: [],
   }),
   computed: {
-    ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos']),
+    ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos', 'alltotalPorPedido']),
   },
   methods: {
     onEdit() {},
@@ -49,7 +50,6 @@ export default defineComponent({
     onDelete() {},
     setPedidoTableItems() {
       this.allPedidos.forEach((pedido) => {
-        // console.log(pedido)
         let itemResumen = []
         let productosDePedidoConInfo = []
         let productosDePedido = []
@@ -61,10 +61,6 @@ export default defineComponent({
             productosDePedido.push(element)
           }
         })
-        console.log(productosDePedido)
-        // productosDePedido = JSON.stringify(productosDePedido)
-
-
         this.allProductos.forEach((producto) => {
           productosDePedido.forEach((element) => {
             if (producto.productoId == element.productoId) {
@@ -72,9 +68,6 @@ export default defineComponent({
             }
           })
         })
-        // console.log(productosDePedidoConInfo)
-        // productosDePedidoConInfo = JSON.stringify(productosDePedidoConInfo)
-
         this.allCategorias.forEach((categoria) => {
           productosDePedidoConInfo.forEach((element) => {
             if (element.categoriaId == categoria.idCategoria) {
@@ -82,11 +75,7 @@ export default defineComponent({
             }
           })
         })
-        // console.log(categorias)
-        // categorias = JSON.stringify(categorias)
-
         for (let i = 0; i < productosDePedidoConInfo.length; i++) {
-          console.log('categoria: ' + categorias[i])
           object = {
             categoria: categorias[i].nombre,
             producto: productosDePedidoConInfo[i].nombre,
@@ -97,10 +86,14 @@ export default defineComponent({
           itemResumen.push(object)
         }
         pedido['resumen'] = itemResumen
-      })
 
+        // for (let i = 0; i < array.length; i++) {
+        //   const element = array[i];
+          
+        // }
+
+      })
       this.items = this.allPedidos
-      // console.log(this.items)
     },
   },
   created() {

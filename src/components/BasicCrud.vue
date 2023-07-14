@@ -32,7 +32,7 @@
         </table>
       </template>
       <template v-slot:item.actions="{ item }">
-        <actionButtons :show-delete="showDelete" :show-edit="showEdit" :showVisor="showVisor" />
+        <actionButtons @onEdit="editItem(item)" :show-delete="showDelete" :show-edit="showEdit" :showVisor="showVisor" />
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="refresh()">Recargar</v-btn>
@@ -101,7 +101,6 @@ export default defineComponent({
       this.$emit('onAdd')
     },
     editItem(item) {
-      console.log('editando item', item)
       this.editedIndex = this.items.indexOf(item) // para que cambie el titulo
       this.$emit('onEdit', item, this.editedIndex)
     },

@@ -35,12 +35,16 @@
       </table>
     </v-col>
     <v-col>
-      <span v-for="(item, index) in pedidosArray" :key="index">
+      <span style="display: block" v-for="(item, index) in pedidosArray" :key="index">
         {{ item.nombre }}
-        {{ item.precio }}
-        {{ item.cantidad }}
         {{ item.precio * item.cantidad }}
+        <v-btn @click="deleteItem(item)" icon>
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
       </span>
+    </v-col>
+    <v-col>
+      <h1>{{ totalPorPedido }}</h1>
     </v-col>
   </v-row>
 </template>
@@ -57,6 +61,7 @@ export default defineComponent({
     productos: [],
     pedidoproductos: [],
     pedidosArray: [],
+    totalPorPedido: 0,
   }),
   computed: {
     ...mapGetters(['allProductos', 'allPedidosProductos']),
@@ -65,6 +70,20 @@ export default defineComponent({
     addItem() {
       this.productoSeleccionado.cantidad = this.cantidad
       this.pedidosArray.push(this.productoSeleccionado)
+      this.totalPorPedido = this.totalPorPedido + this.productoSeleccionado.cantidad * this.productoSeleccionado.precio
+    },
+    deleteItem(item) {
+      console.log(item)
+      this.pedidosArray = this.pedidosArray.filter((element) => {
+        return element.productoId != item.productoId
+      })
+      this.totalPorPedido = this.totalPorPedido - item.cantidad * item.precio
+    },
+  },
+  watch: {
+    totalPorPedido(newVal, oldVal) {
+      console.log('elemento seleccionado', newVal)
+      this.$emit('input', newVal)
     },
     // setItems() {
     //   this.productos.forEach((producto) => {
