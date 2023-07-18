@@ -34,7 +34,9 @@ export default defineComponent({
     editItem() {
       this.$emit('onEdit')
     },
-    deleteItem() {},
+    deleteItem() {
+      this.$emit('onDelete')
+    },
   },
 })
 </script>

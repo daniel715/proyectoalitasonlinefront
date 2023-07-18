@@ -13,7 +13,7 @@
                 @keydown.enter="save"
                 autofocus
                 outlined
-                v-model="nombre"
+                v-model="editedItem.nombre"
                 @input="input"
                 label="Nombre"
               ></v-text-field>
@@ -33,17 +33,18 @@
     <script>
 import { defineComponent } from '@vue/composition-api'
 import { UUID } from 'uuidjs'
+import { mapActions } from 'vuex'
 export default defineComponent({
   data: () => ({
     dialog: false,
     editedIndex: -1,
     nombre: '',
     editedItem: {
-      id: '',
+      idCategoria: '',
       nombre: '',
     },
     defaultItem: {
-      id: '',
+      idCategoria: '',
       nombre: '',
     },
     entidad: 'categoria',
@@ -54,6 +55,7 @@ export default defineComponent({
     },
   },
   methods: {
+    ...mapActions(['addCategoria', 'updateCategoria']),
     input(data) {
       console.log(data)
       this.nombre = data
@@ -63,16 +65,17 @@ export default defineComponent({
       //editando categoria
       if (this.editedIndex > -1) {
         this.editedItem.nombre = this.nombre
-        let respuesta = await this.$axios.patch(this.entidad + '/update/' + this.editedItem.id, this.editedItem)
-        console.log(respuesta)
-        if (respuesta.status == '201') {
+        let response = await this.updateCategoria(this.editedItem)
+        if (response.status == '201') {
+          console.log('actualizado con exito')
         }
       } else {
         //creando nueva categoria
-        this.editedItem.id = UUID.generate()
+        this.editedItem.idCategoria = UUID.generate()
         this.editedItem.nombre = this.nombre
-        let response = await this.$axios.post(this.entidad + '/save', this.editedItem)
+        let response = await this.addCategoria(this.editedItem)
         if (response.status == '201') {
+          console.log('guardado con exito')
         }
       }
       this.refresh()

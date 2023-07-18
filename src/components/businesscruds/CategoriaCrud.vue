@@ -3,14 +3,13 @@
     <basic-crud
       ref="basicCrud"
       @onEdit="onEdit"
-      @getItems="getItems"
       @onAdd="onAdd"
       @onDelete="onDelete"
       :headers="headers"
       :entidad="entidad"
       :items="items"
-      showEdit
       showDelete
+      showEdit
     />
     <add-categoria-dialog @refresh="refresh" ref="addCategoriaDialog" />
   </div>
@@ -18,6 +17,7 @@
 <script>
 import basicCrud from '@/components/BasicCrud.vue'
 import addCategoriaDialog from '@/components/AddDialogs/AddCategoriaDialog.vue'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     basicCrud,
@@ -29,13 +29,15 @@ export default {
       { text: 'Nombre', value: 'nombre' },
       { text: 'Actions', value: 'actions', align: 'end' },
     ],
-    items:[{
-      nombre : 'ALITAS' , 
-    }],
+    items: [],
     editedItem: {},
     editedIndex: '',
   }),
+  computed: {
+    ...mapGetters(['allCategorias']),
+  },
   methods: {
+    ...mapActions(['deleteCategoria']),
     onAdd() {
       this.$refs.addCategoriaDialog.dialog = true
     },
@@ -49,10 +51,11 @@ export default {
       }, 100)
     },
     async onDelete(data) {
-      let response = await this.$axios.delete(this.entidad + '/delete/' + data.id)
+      let response = await this.deleteCategoria(data)
+      console.log(response)
       if (response.status == '204') {
-        this.refresh()
-        console.log('eliminado y actualizado')
+        console.log('eliminado con exito')
+        this.items = this.allCategorias
       }
     },
     openDialog() {
@@ -60,19 +63,15 @@ export default {
     },
     setRefs() {
       this.$refs.addCategoriaDialog.editedIndex = this.editedIndex
-      this.$refs.addCategoriaDialog.nombre = this.editedItem.nombre
-      this.$refs.addCategoriaDialog.editedItem.id = this.editedItem.id
+      this.$refs.addCategoriaDialog.editedItem.idCategoria = this.editedItem.idCategoria
+      this.$refs.addCategoriaDialog.editedItem.nombre = this.editedItem.nombre
     },
     refresh() {
-      this.getItems()
+      this.items = this.allCategorias
     },
-    async getItems() {
-      let response = await this.$axios.get(this.entidad + '/list')
-      console.log(response)
-      setTimeout(() => {
-        this.$refs.basicCrud.items = response.data
-      }, 500)
-    },
+  },
+  created() {
+    this.items = this.allCategorias
   },
 }
 </script>
