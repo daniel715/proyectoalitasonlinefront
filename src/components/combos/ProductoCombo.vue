@@ -37,7 +37,7 @@
     <v-col>
       <span style="display: block" v-for="(item, index) in pedidosArray" :key="index">
         {{ item.nombre }}
-        {{ item.precio * item.cantidad }}
+        {{  item.cantidad }}
         <v-btn @click="deleteItem(item)" icon>
           <v-icon>mdi-delete</v-icon>
         </v-btn>
@@ -85,6 +85,9 @@ export default defineComponent({
       console.log('elemento seleccionado', newVal)
       this.$emit('input', newVal)
     },
+    pedidosArray(newVal, oldVal){
+      this.$emit('itemsSelected', newVal)
+    }
     // setItems() {
     //   this.productos.forEach((producto) => {
     //     this.pedidoproductos.forEach((element) => {

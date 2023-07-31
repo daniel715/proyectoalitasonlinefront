@@ -2,21 +2,23 @@
   <div>
     <basic-crud
       ref="basicCrud"
-      @onEdit="onEdit"
       @onAdd="onAdd"
+      @refresh="refresh"
       @onDelete="onDelete"
       :headers="headers"
       :entidad="entidad"
       :items="items"
       showVisor
+      showDelete
+      showEdit
     />
-    <add-pedido-dialog ref="addPedidoDialog" />
+    <add-pedido-dialog @refresh="refresh" ref="addPedidoDialog" />
   </div>
 </template>
 <script>
 import { defineComponent } from '@vue/composition-api'
 import basicCrud from '@/components/BasicCrud.vue'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import AddPedidoDialog from '../AddDialogs/AddPedidoDialog.vue'
 export default defineComponent({
   components: {
@@ -32,24 +34,48 @@ export default defineComponent({
       { text: 'Metodo Pago', value: 'metodoPago' },
       { text: 'Observaciones', value: 'observacion' },
       { text: 'Resumen', value: 'resumen' },
-      { text: 'Total', value: 'precioTotal' },
-      { text: 'Actions', value: 'actions', align: 'end' },
+      { text: 'Total', value: 'totalPagar' },
+      { text: 'Actions', width: '150px', value: 'actions', align: 'end' },
     ],
     items: [],
     entidad: 'Pedido',
     productosIdArray: [],
   }),
   computed: {
+    pedidos: {
+      get: function () {
+        return this.items
+      },
+      set: function (value) {
+        this.$emit('listchange', value)
+      },
+    },
     ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos', 'alltotalPorPedido']),
   },
   methods: {
-    onEdit() {},
+    ...mapActions(['deletePedido', 'deletePedidoProducto']),
     onAdd() {
       this.$refs.addPedidoDialog.dialog = true
     },
-    onDelete() {},
+    refresh() {
+      setTimeout(() => {
+        console.log('refrescando')
+        this.setPedidoTableItems()
+      }, 500)
+    },
+    async onDelete(item) {
+      let response = await this.deletePedidoProducto(item.pedidoId)
+      if (response.status == '204') {
+        console.log('eliminado con exito, falta eliminar tabla inntermedia ...')
+        let response2 = await this.deletePedido(item)
+        console.log('respuesta2', response2)
+        this.setPedidoTableItems()
+      }
+    },
     setPedidoTableItems() {
-      this.allPedidos.forEach((pedido) => {
+      console.log(this.allPedidosProductos.length)
+      let pedidos = this.allPedidos
+      pedidos.forEach((pedido) => {
         let itemResumen = []
         let productosDePedidoConInfo = []
         let productosDePedido = []
@@ -86,15 +112,9 @@ export default defineComponent({
           itemResumen.push(object)
         }
         pedido['resumen'] = itemResumen
-
-        // for (let i = 0; i < array.length; i++) {
-        //   const element = array[i];
-          
-        // }
-
       })
-      this.items = this.allPedidos
-    },
+      this.items = pedidos
+    }
   },
   created() {
     this.setPedidoTableItems()

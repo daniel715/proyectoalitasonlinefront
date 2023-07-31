@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex flex-row datetime-input">
     <h3>{{ label }}</h3>
-    <date-input @input="setFecha" left :label="dateLabel" current />
+    <date-input :value="fecha" @input="setFecha" left :label="dateLabel" current />
     <v-spacer />
-    <time-input @input="setHora" right :label="hourLabel" current />
+    <time-input :value="hora" @input="setHora" right :label="hourLabel" current />
   </div>
 </template>
 

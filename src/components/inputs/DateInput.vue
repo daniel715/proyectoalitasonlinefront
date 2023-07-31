@@ -13,14 +13,7 @@
       @keypress="$emit('keypress', $event)"
       ref="input"
       @blur="onBlur"
-      style=""
       :style="`width: ${width};max-width:${width};`"
-      :class="`${isEditable ? 'd-flex flex-row' : ''} ${left && !isMobile ? 'mr-1' : ''} ${
-        right && !isMobile ? 'ml-1' : ''
-      } ${hideDetail ? 'hide-detail-input' : ''} ${leftLabel ? 'ml-1' : ''} ${
-        noMarginBottom ? 'no-margin-bottom' : ''
-      } date-input ${classInput}`"
-      :height="height"
     />
   </div>
 </template>
@@ -144,11 +137,10 @@ export default {
       if (this.current) this.model = this.currentDate
     },
     onBlur() {
-      this.$refs.input.isResetting = true
+      // this.$refs.input.isResetting = true
       this.$emit('blur')
     },
   },
-  mounted() {},
   created() {
     this.model = this.value
     this.initRules()

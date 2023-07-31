@@ -14,14 +14,14 @@
         <!-- <span v-html="item.name"></span> -->
         <table density="compact">
           <thead>
-            <th class="text-left">categoria</th>
+            <th class="text-left">Categoria</th>
             <th class="text-left">producto</th>
             <th class="text-left">precio</th>
             <th class="text-left">cantidad</th>
             <th class="text-left">total</th>
           </thead>
           <tbody>
-            <tr v-for="element in item.resumen" :key="item.id">
+            <tr v-for="element in item.resumen" :key="element.id">
               <td>{{ element.categoria }}</td>
               <td>{{ element.producto }}</td>
               <td>{{ element.precio }}</td>
@@ -115,7 +115,7 @@ export default defineComponent({
     },
 
     async getItems() {
-      this.$emit('getItems')
+      this.$emit('refresh')
     },
     refresh() {
       this.getItems()

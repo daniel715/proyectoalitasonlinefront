@@ -17,7 +17,7 @@
         <v-card v-else-if="item == 'menu'">
           <carta-crud />
         </v-card>
-        <v-card v-else-if="item == 'bebidas'"> <bebidas-crud /> </v-card>
+        <!-- <v-card v-else-if="item == 'bebidas'"> <bebidas-crud /> </v-card> -->
         <v-card v-else-if="item == 'combos'"> <combo-crud/> </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -33,7 +33,7 @@ export default defineComponent({
   components: { CategoriaCrud, CartaCrud, BebidasCrud, ComboCrud },
   data: () => ({
     tab: null,
-    items: ['categorias', 'menu', 'bebidas', 'combos'],
+    items: ['categorias', 'menu', 'combos'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   }),
 })

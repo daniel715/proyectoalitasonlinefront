@@ -23,7 +23,6 @@
           <menu-crud />
         </v-card>
         <v-card v-else-if="item == 'Compacto'"> <compacto /> </v-card>
-        <v-card v-else-if="item == 'Contactos'"> <contacto-crud /> </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -34,7 +33,6 @@ import basicCrud from '@/components/BasicCrud.vue'
 import categoriaCrud from '@/components/businesscruds/CategoriaCrud.vue'
 import menuCrud from '@/components/businesscruds/MenuCrud.vue'
 import pedidoCrud from '@/components/businesscruds/PedidoCrud.vue'
-import ContactoCrud from './businesscruds/ContactoCrud.vue'
 import Compacto from './businesscruds/Compacto.vue'
 export default defineComponent({
   components: {
@@ -42,12 +40,11 @@ export default defineComponent({
     categoriaCrud,
     menuCrud,
     pedidoCrud,
-    ContactoCrud,
     Compacto
   },
   data: () => ({
     tab: null,
-    items: ['Pedidos', 'Carta', 'Compacto', 'Contactos'],
+    items: ['Pedidos', 'Carta', 'Compacto'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   }),
   methods: {},
