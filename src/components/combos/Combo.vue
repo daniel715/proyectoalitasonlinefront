@@ -1,7 +1,6 @@
 <template>
   <!-- :search-input.sync="search" -->
-  <v-row>
-    <v-col :cols="cols" class="pa-0">
+    <v-col :cols="cols" class="pa-0 ma-0">
       <div class="d-flex flex-column">
         <!-- <label class="custom-label" :id="uniqueId">{{ label }}</label> -->
         <v-select
@@ -14,10 +13,10 @@
           dense
           :rules="noRequired ? [] : [rules.required]"
           ref="input"
+          class="pa-0"
         ></v-select>
       </div>
     </v-col>
-  </v-row>
 </template>
 
 <script>

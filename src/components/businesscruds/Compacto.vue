@@ -1,3 +1,3 @@
 <template>
-    <h3>aqui van las estadisticas</h3>
+    <h3>Se necesita data</h3>
 </template>

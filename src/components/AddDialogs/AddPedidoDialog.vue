@@ -1,5 +1,5 @@
 <template>
-  <v-dialog @click:outside="close" v-model="dialog" max-width="1000px">
+  <v-dialog @click:outside="close" v-model="dialog" max-width="800px">
     <v-card>
       <v-card-title>
         <span class="text-h5">{{ formTitle }}</span>
@@ -8,8 +8,8 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="6" md="8">
-              <div style="width: 50%">
+            <v-col cols="12" sm="6" md="10">
+              <div class="mr-2" style="width: 50%">
                 <DateTimeInput ref="fechaPedidoRef" @input="setFechaPedido" label="Fecha pedido" />
               </div>
               <div style="width: 50%">
@@ -18,20 +18,24 @@
               <div style="width: 50%">
                 <DateTimeInput ref="fechaEntregaRef" @input="setFechaEntrega" label="Fecha entrega" />
               </div>
+              <producto-combo @pedidosEmpty="onEmptyPedidos" class="my-1" @itemsSelected="setResumen" @input="setTotalPedido" ref="productoComboRef" />
+              <div class="my-1">
+                <h3>Metodo de pago</h3>
+                <v-radio-group row v-model="editedItem.metodoPago">
+                  <v-radio v-for="n in radioItems" :key="n" :label="`${n}`" :value="n"></v-radio>
+                </v-radio-group>
+              </div>
               <v-text-field outlined v-model="editedItem.direccion" label="Direccion"></v-text-field>
-              <h3>Metodo de pago</h3>
-              <v-radio-group row v-model="editedItem.metodoPago">
-                <v-radio v-for="n in radioItems" :key="n" :label="`${n}`" :value="n"></v-radio>
-              </v-radio-group>
-              <v-text-field outlined v-model="editedItem.observacion" label="Observaciones"></v-text-field>
-              <producto-combo @itemsSelected="setResumen" @input="setTotalPedido" />
 
               <v-text-field
                 type="number"
                 outlined
                 v-model.number="editedItem.montoRecibido"
                 label="Monto Recibido"
+                class="mt-5"
               ></v-text-field>
+
+              <v-text-field outlined v-model="editedItem.observacion" label="Observaciones"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -102,7 +106,7 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions(['addPedido', 'addPedidoProducto']),
+    ...mapActions(['addPedido', 'addPedidoProducto', 'updatePedido']),
     setFechaPedido(data) {
       if (data != null) {
         this.fechaPedido = data
@@ -125,10 +129,13 @@ export default defineComponent({
       console.log(this.editedIndex)
       //editando categoria
       if (this.editedIndex > -1) {
-        this.editedItem.nombre = this.nombre
         let respuesta = await this.updatePedido(this.editedItem)
         console.log(respuesta)
         if (respuesta.status == '201') {
+          // ACTUALIZANDO TABLA PEDIDO_PRODUCTO
+          for (let index = 0; index < this.editedItem.resumen.length; index++) {
+            this.addPedidoProducto(this.editedItem.resumen[index])
+          }
         }
       } else {
         //creando nuevo pedido
@@ -152,24 +159,40 @@ export default defineComponent({
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
         this.editedIndex = -1
-        this.nombre = ''
       })
     },
     setTotalPedido(data) {
       this.editedItem.totalPagar = data
     },
     setResumen(data) {
-      this.editedItem.resumen = []
-      console.log(data)
-      for (let index = 0; index < data.length; index++) {
-        let objeto = {
-          pedidoId: this.editedItem.pedidoId,
-          productoId: data[index].productoId,
-          cantidad: parseInt(data[index].cantidad),
+      console.log('resumen',data)
+      if (data.length > 0) {
+        this.editedItem.resumen = []
+        if (this.editedIndex > -1) {
+          for (let index = 0; index < data.length; index++) {
+            let objeto = {
+              pedidoId: this.editedItem.pedidoId,
+              productoId: data[index].productoId,
+              cantidad: parseInt(data[index].cantidad),
+            }
+            this.editedItem.resumen.push(objeto)
+          }
+        } else {
+          for (let index = 0; index < data.length; index++) {
+            let objeto = {
+              pedidoId: this.editedItem.pedidoId,
+              productoId: data[index].productoId,
+              cantidad: parseInt(data[index].cantidad),
+            }
+            this.editedItem.resumen.push(objeto)
+          }
         }
-        this.editedItem.resumen.push(objeto)
       }
     },
+    onEmptyPedidos(){
+      this.editedItem.resumen = []
+      this.editedItem.totalPagar = 0
+    }
   },
   watch: {
     dialog(newVal, oldVal) {
@@ -179,6 +202,19 @@ export default defineComponent({
           (this.editedItem.fechaSalida = this.fechaSalida),
           (this.editedItem.pedidoId = UUID.generate())
       }
+    },
+    editedItem: {
+      handler(newVal, oldval) {
+        setTimeout(() => {
+          if (newVal.resumen.length == 0) {
+            this.$refs.productoComboRef.pedidosArray = []
+            this.$refs.productoComboRef.totalPorPedido = 0
+            this.$refs.productoComboRef.productoSeleccionado = { nombre: '', precio: '' }
+            this.$refs.productoComboRef.cantidad = ''
+          }
+        }, 500)
+      },
+      deep: true,
     },
   },
 })

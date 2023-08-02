@@ -16,6 +16,11 @@ const actions = {
         commit('newPedidoProducto', response.data)
         return response;
     },
+    async updatePedidoProducto({ commit }, pedidoProducto) {
+        const response = await axiosInstance.patch("/pedidoproducto/update/" + pedido.pedidoId, pedido)
+        commit('updatePedido', response.data)
+        return response;
+    },
     async deletePedidoProducto({ commit }, pedidoId) {
         const response = await axiosInstance.delete("/pedidoproducto/delete/" + pedidoId )
         commit('deletePedidoProducto', pedidoId)

@@ -14,7 +14,7 @@
     <add-dialog @closeDialog="onCloseDialog" ref="addDialog" entidad="Combo">
       <template v-slot:body>
         <v-row>
-          <v-col cols="9">
+          <v-col>
             <combo
               label="Seleccione Categoria"
               @input="setCategoriaId"
@@ -32,9 +32,8 @@
               ref="input"
               multiple
               outlined
+              class="pa-0"
             ></v-select>
-          </v-col>
-          <v-col cols="3">
             <v-spacer></v-spacer>
             <span>Precio Total {{ precioAcumulado }}</span>
             <v-text-field class="mt-5" outlined v-model="editedItem.precio" type="number" label="Precio"></v-text-field>
@@ -140,8 +139,6 @@ export default {
       this.setComboTableItems()
     },
     onEdit(item) {
-      console.log('editandooo', item)
-      console.log(this.items)
       this.editedIndex = this.items.indexOf(item)
       this.$refs.addDialog.dialog = true
       this.$refs.addDialog.editedIndex = this.editedIndex

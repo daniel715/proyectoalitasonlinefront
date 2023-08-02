@@ -3,12 +3,12 @@
     <basic-crud
       ref="basicCrud"
       @onAdd="onAdd"
+      @onEdit="onEdit"
       @refresh="refresh"
       @onDelete="onDelete"
       :headers="headers"
       :entidad="entidad"
       :items="items"
-      showVisor
       showDelete
       showEdit
     />
@@ -40,6 +40,21 @@ export default defineComponent({
     items: [],
     entidad: 'Pedido',
     productosIdArray: [],
+    editedItem: {
+      pedidoId: '',
+      fechaPedido: '',
+      fechaSalida: '',
+      fechaEntrega: '',
+      direccion: '',
+      metodoPago: '',
+      observacion: '',
+      montoRecibido: 0,
+      totalPagar: '',
+      respuestaPagoApp: null,
+      status: null,
+      direccionIp: null,
+      resumen: [],
+    },
   }),
   computed: {
     pedidos: {
@@ -57,11 +72,42 @@ export default defineComponent({
     onAdd() {
       this.$refs.addPedidoDialog.dialog = true
     },
-    refresh() {
+    onEdit(item) {
+      console.log(item)
+      this.editedIndex = this.items.indexOf(item)
+      this.$refs.addPedidoDialog.dialog = true
+      this.$refs.addPedidoDialog.editedIndex = this.editedIndex
+      // this.$refs.addPedidoDialog.setResumen(item.resumen)
+      // this.$refs.addPedidoDialog.setTotalPedido(item.totalPagar)
+      this.setRefs(item)
+    },
+    setRefs(item) {
+      console.log("Refs", item)
       setTimeout(() => {
-        console.log('refrescando')
-        this.setPedidoTableItems()
+        this.$refs.addPedidoDialog.editedItem.pedidoId = item.pedidoId
+        this.$refs.addPedidoDialog.editedItem.fechaSalida = item.fechaSalida
+        this.$refs.addPedidoDialog.editedItem.fechaEntrega = item.fechaEntrega
+        this.$refs.addPedidoDialog.editedItem.direccion = item.direccion
+        this.$refs.addPedidoDialog.editedItem.metodoPago = item.metodoPago
+        this.$refs.addPedidoDialog.editedItem.observacion = item.observacion
+        this.$refs.addPedidoDialog.editedItem.montoRecibido = item.montoRecibido
+        this.$refs.addPedidoDialog.editedItem.totalPagar = item.totalPagar
+        this.$refs.addPedidoDialog.editedItem.respuestaPagoApp = item.respuestaPagoApp
+        this.$refs.addPedidoDialog.editedItem.status = item.status
+        this.$refs.addPedidoDialog.editedItem.direccionIp = item.direccionIp
+        this.$refs.addPedidoDialog.editedItem.resumen = item.resumen
+
+        this.$refs.addPedidoDialog.$refs.fechaPedidoRef.date = item.fechaPedido
+        this.$refs.addPedidoDialog.$refs.fechaSalidaRef.date = item.fechaSalida
+        this.$refs.addPedidoDialog.$refs.fechaEntregaRef.date = item.fechaEntrega
+
+        this.$refs.addPedidoDialog.$refs.productoComboRef.pedidosArray = item.resumen
+        this.$refs.addPedidoDialog.$refs.productoComboRef.totalPorPedido = item.totalPagar
       }, 500)
+    },
+    refresh() {
+      console.log('refrescando')
+      this.setPedidoTableItems()
     },
     async onDelete(item) {
       let response = await this.deletePedidoProducto(item.pedidoId)
@@ -73,9 +119,9 @@ export default defineComponent({
       }
     },
     setPedidoTableItems() {
-      console.log(this.allPedidosProductos.length)
       let pedidos = this.allPedidos
       pedidos.forEach((pedido) => {
+        console.log(pedido)
         let itemResumen = []
         let productosDePedidoConInfo = []
         let productosDePedido = []
@@ -101,8 +147,11 @@ export default defineComponent({
             }
           })
         })
+        console.log(productosDePedidoConInfo)
         for (let i = 0; i < productosDePedidoConInfo.length; i++) {
           object = {
+            pedidoId: pedido.pedidoId,
+            productoId : productosDePedidoConInfo[i].productoId,
             categoria: categorias[i].nombre,
             producto: productosDePedidoConInfo[i].nombre,
             cantidad: productosDePedido[i].cantidad,
@@ -114,7 +163,7 @@ export default defineComponent({
         pedido['resumen'] = itemResumen
       })
       this.items = pedidos
-    }
+    },
   },
   created() {
     this.setPedidoTableItems()

@@ -49,6 +49,15 @@ export default {
       this.date = this.fecha + ' ' + this.hora
       this.$emit('input', this.date)
     },
+    getFechaFromDate(date) {
+      this.setFecha(date.split(' ')[0])
+      this.setHora(date.split(' ')[1])
+    },
+  },
+  watch: {
+    date(newVal, oldVal) {
+      this.getFechaFromDate(newVal)
+    },
   },
 }
 </script>
