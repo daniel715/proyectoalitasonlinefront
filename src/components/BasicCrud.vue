@@ -6,7 +6,7 @@
           <v-toolbar-title>Administrador {{ entidad }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-btn class="primary" @click="addItem()">Agregar</v-btn>
-          <v-btn class="primary ml-5" @click="getItems()">Refrescar</v-btn>
+          <!-- <v-btn class="primary ml-5" @click="getItems()">Refrescar</v-btn> -->
         </v-toolbar>
       </template>
       <template v-slot:item.resumen="{ item }">

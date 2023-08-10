@@ -116,6 +116,7 @@ export default {
       })
       resultado.forEach((element) => {
         if (element.combo) {
+          element.nombre = element.nombre.slice(0, -2)
           this.items.push(element)
         }
       })
