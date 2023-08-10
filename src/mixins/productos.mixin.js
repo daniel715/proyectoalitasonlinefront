@@ -1,5 +1,4 @@
 import { mapGetters, mapActions } from 'vuex'
-import { UUID } from 'uuidjs'
 export default {
   data: () => ({
     editedItem: {
@@ -33,7 +32,10 @@ export default {
       } else {
         console.log(item)
         //creando nuevo prouducto
-        item.productoId = UUID.generate()
+        const dateString = Date.now().toString(36)
+        const randomness = Math.random().toString(36).substr(2)
+        const uniqueId = dateString + randomness
+        item.productoId = uniqueId
         let response = await this.addProducto(item)
         if (response.status == '201') {
           return response

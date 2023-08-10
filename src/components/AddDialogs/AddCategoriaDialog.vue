@@ -32,7 +32,6 @@
 </template>
     <script>
 import { defineComponent } from '@vue/composition-api'
-import { UUID } from 'uuidjs'
 import { mapActions } from 'vuex'
 export default defineComponent({
   data: () => ({
@@ -71,7 +70,10 @@ export default defineComponent({
         }
       } else {
         //creando nueva categoria
-        this.editedItem.idCategoria = UUID.generate()
+        const dateString = Date.now().toString(36)
+        const randomness = Math.random().toString(36).substr(2)
+        const uniqueId = dateString + randomness
+        this.editedItem.idCategoria = uniqueId
         this.editedItem.nombre = this.nombre
         let response = await this.addCategoria(this.editedItem)
         if (response.status == '201') {

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar color="cyan" dark flat>
+    <v-toolbar color="blue" dark flat>
       <v-toolbar-title>Control de caja</v-toolbar-title>
       <v-spacer></v-spacer>
       <template v-slot:extension>
@@ -44,7 +44,7 @@ export default defineComponent({
   },
   data: () => ({
     tab: null,
-    items: ['Pedidos', 'Carta', 'Compacto'],
+    items: ['Pedidos', 'Carta'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   }),
   methods: {},

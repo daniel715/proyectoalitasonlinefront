@@ -27,19 +27,20 @@ export default defineComponent({
   },
   data: () => ({
     headers: [
-      { text: 'Fecha Pedido', value: 'fechaPedido' },
-      { text: 'Fecha Salida ', value: 'fechaSalida' },
-      { text: 'Fecha Entrega', value: 'fechaEntrega' },
+      { text: 'Fecha Pedido', value: 'fechaPedido', width: '105px' },
+      { text: 'Fecha Salida ', value: 'fechaSalida', width: '105px' },
+      { text: 'Fecha Entrega', value: 'fechaEntrega', width: '105px' },
       { text: 'Direccion', value: 'direccion' },
       { text: 'Metodo Pago', value: 'metodoPago' },
       { text: 'Observaciones', value: 'observacion' },
-      { text: 'Resumen', value: 'resumen' },
-      { text: 'Total', value: 'totalPagar' },
-      { text: 'Actions', width: '150px', value: 'actions', align: 'end' },
+      { text: 'Resumen', value: 'resumen', width: '800px' },
+      { text: 'Total', value: 'totalPagar', width: '20px' },
+      { text: 'Acciones', width: '100px', value: 'actions', align: 'end' },
     ],
     items: [],
     entidad: 'Pedido',
     productosIdArray: [],
+    editedIndex: -1,
     editedItem: {
       pedidoId: '',
       fechaPedido: '',
@@ -57,20 +58,15 @@ export default defineComponent({
     },
   }),
   computed: {
-    pedidos: {
-      get: function () {
-        return this.items
-      },
-      set: function (value) {
-        this.$emit('listchange', value)
-      },
-    },
     ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos', 'alltotalPorPedido']),
   },
   methods: {
     ...mapActions(['deletePedido', 'deletePedidoProducto']),
     onAdd() {
+      this.editedIndex = -1
       this.$refs.addPedidoDialog.dialog = true
+      this.$refs.addPedidoDialog.editedIndex = this.editedIndex
+      this.$refs.addPedidoDialog.setFechasToCreate()
     },
     onEdit(item) {
       console.log(item)
@@ -82,9 +78,10 @@ export default defineComponent({
       this.setRefs(item)
     },
     setRefs(item) {
-      console.log("Refs", item)
+      console.log('Refs', item)
       setTimeout(() => {
         this.$refs.addPedidoDialog.editedItem.pedidoId = item.pedidoId
+        this.$refs.addPedidoDialog.editedItem.fechaPedido = item.fechaPedido
         this.$refs.addPedidoDialog.editedItem.fechaSalida = item.fechaSalida
         this.$refs.addPedidoDialog.editedItem.fechaEntrega = item.fechaEntrega
         this.$refs.addPedidoDialog.editedItem.direccion = item.direccion
@@ -103,11 +100,13 @@ export default defineComponent({
 
         this.$refs.addPedidoDialog.$refs.productoComboRef.pedidosArray = item.resumen
         this.$refs.addPedidoDialog.$refs.productoComboRef.totalPorPedido = item.totalPagar
-      }, 500)
+      }, 100)
     },
     refresh() {
-      console.log('refrescando')
-      this.setPedidoTableItems()
+      console.log('refrescando en pedido')
+      setTimeout(() => {
+        this.setPedidoTableItems()
+      }, 100)
     },
     async onDelete(item) {
       let response = await this.deletePedidoProducto(item.pedidoId)
@@ -115,43 +114,69 @@ export default defineComponent({
         console.log('eliminado con exito, falta eliminar tabla inntermedia ...')
         let response2 = await this.deletePedido(item)
         console.log('respuesta2', response2)
-        this.setPedidoTableItems()
+        this.refresh()
       }
     },
     setPedidoTableItems() {
-      let pedidos = this.allPedidos
+      let pedidos = []
+      this.items = []
+      this.allPedidos.forEach((element) => {
+        pedidos.push(element)
+      })
+
       pedidos.forEach((pedido) => {
-        console.log(pedido)
         let itemResumen = []
         let productosDePedidoConInfo = []
         let productosDePedido = []
         let categorias = []
         let object = {}
 
-        this.allPedidosProductos.forEach((element) => {
-          if (element.pedidoId == pedido.pedidoId) {
-            productosDePedido.push(element)
+        // this.allPedidosProductos.forEach((element) => {
+        //   if (element.pedidoId == pedido.pedidoId) {
+        //     productosDePedido.push(element)
+        //   }
+        // })
+
+        for (let index = 0; index < this.allPedidosProductos.length; index++) {
+          if (this.allPedidosProductos[index].pedidoId == pedido.pedidoId) {
+            productosDePedido.push(this.allPedidosProductos[index])
           }
-        })
-        this.allProductos.forEach((producto) => {
-          productosDePedido.forEach((element) => {
-            if (producto.productoId == element.productoId) {
-              productosDePedidoConInfo.push(producto)
+        }
+        // this.allProductos.forEach((producto) => {
+        //   productosDePedido.forEach((element) => {
+        //     if (producto.productoId == element.productoId) {
+        //       productosDePedidoConInfo.push(producto)
+        //     }
+        //   })
+        // })
+        for (let index1 = 0; index1 < this.allProductos.length; index1++) {
+          for (let index2 = 0; index2 < productosDePedido.length; index2++) {
+            if (this.allProductos[index1].productoId == productosDePedido[index2].productoId) {
+              productosDePedidoConInfo.push(this.allProductos[index1])
             }
-          })
-        })
-        this.allCategorias.forEach((categoria) => {
-          productosDePedidoConInfo.forEach((element) => {
-            if (element.categoriaId == categoria.idCategoria) {
-              categorias.push(categoria)
+          }
+        }
+
+        // this.allCategorias.forEach((categoria) => {
+        //   productosDePedidoConInfo.forEach((element) => {
+        //     if (element.categoriaId == categoria.idCategoria) {
+        //       categorias.push(categoria)
+        //     }
+        //   })
+        // })
+
+        for (let index1 = 0; index1 < this.allCategorias.length; index1++) {
+          for (let index2 = 0; index2 < productosDePedidoConInfo.length; index2++) {
+            if (productosDePedidoConInfo[index2].categoriaId == this.allCategorias[index1].idCategoria) {
+              categorias.push(this.allCategorias[index1])
             }
-          })
-        })
-        console.log(productosDePedidoConInfo)
+          }
+        }
+
         for (let i = 0; i < productosDePedidoConInfo.length; i++) {
           object = {
             pedidoId: pedido.pedidoId,
-            productoId : productosDePedidoConInfo[i].productoId,
+            productoId: productosDePedidoConInfo[i].productoId,
             categoria: categorias[i].nombre,
             producto: productosDePedidoConInfo[i].nombre,
             cantidad: productosDePedido[i].cantidad,
@@ -162,7 +187,10 @@ export default defineComponent({
         }
         pedido['resumen'] = itemResumen
       })
-      this.items = pedidos
+
+      for (let index = 0; index < pedidos.length; index++) {
+        this.items.push(pedidos[index])
+      }
     },
   },
   created() {

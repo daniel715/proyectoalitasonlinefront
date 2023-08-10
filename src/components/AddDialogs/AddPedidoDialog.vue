@@ -18,7 +18,13 @@
               <div style="width: 50%">
                 <DateTimeInput ref="fechaEntregaRef" @input="setFechaEntrega" label="Fecha entrega" />
               </div>
-              <producto-combo @pedidosEmpty="onEmptyPedidos" class="my-1" @itemsSelected="setResumen" @input="setTotalPedido" ref="productoComboRef" />
+              <producto-combo
+                @pedidosEmpty="onEmptyPedidos"
+                class="my-1"
+                @itemsSelected="setResumen"
+                @input="setTotalPedido"
+                ref="productoComboRef"
+              />
               <div class="my-1">
                 <h3>Metodo de pago</h3>
                 <v-radio-group row v-model="editedItem.metodoPago">
@@ -55,6 +61,7 @@ import DateTimeInput from '../inputs/DateTimeInput.vue'
 import { UUID } from 'uuidjs'
 import ProductoCombo from '../combos/ProductoCombo.vue'
 import { mapActions } from 'vuex'
+import swal from 'sweetalert'
 export default defineComponent({
   components: {
     DateTimeInput,
@@ -99,6 +106,7 @@ export default defineComponent({
       resumen: [],
     },
     entidad: 'pedido',
+    currentDate: '',
   }),
   computed: {
     formTitle() {
@@ -106,10 +114,9 @@ export default defineComponent({
     },
   },
   methods: {
-    ...mapActions(['addPedido', 'addPedidoProducto', 'updatePedido']),
+    ...mapActions(['addPedido', 'addPedidoProducto', 'updatePedido', 'deletePedidoProducto']),
     setFechaPedido(data) {
       if (data != null) {
-        this.fechaPedido = data
         this.editedItem.fechaPedido = data
       }
     },
@@ -125,16 +132,42 @@ export default defineComponent({
         this.editedItem.fechaEntrega = data
       }
     },
+    setFechasToCreate() {
+      console.log('seteando fechas')
+      this.setCurrentDate()
+      this.editedItem.fechaEntrega = this.currentDate
+      this.editedItem.fechaPedido = this.currentDate
+      this.editedItem.fechaSalida = this.currentDate
+
+      setTimeout(() => {
+        this.$refs.fechaPedidoRef.date = this.currentDate
+        this.$refs.fechaSalidaRef.date = this.currentDate
+        this.$refs.fechaEntregaRef.date = this.currentDate
+      }, 100)
+    },
     async save() {
       console.log(this.editedIndex)
-      //editando categoria
       if (this.editedIndex > -1) {
         let respuesta = await this.updatePedido(this.editedItem)
         console.log(respuesta)
-        if (respuesta.status == '201') {
-          // ACTUALIZANDO TABLA PEDIDO_PRODUCTO
-          for (let index = 0; index < this.editedItem.resumen.length; index++) {
-            this.addPedidoProducto(this.editedItem.resumen[index])
+        if (respuesta.status == '200') {
+          // ACTUALIZANDO TABLA PEDIDO_PRODUCTO borramos los items del pedido primero
+          let deleteResponse = await this.deletePedidoProducto(this.editedItem.pedidoId)
+          // procedemos a setear el nuevo resumen
+          console.log(deleteResponse)
+          if (deleteResponse.status == '204') {
+            for (let index = 0; index < this.editedItem.resumen.length; index++) {
+              this.addPedidoProducto(this.editedItem.resumen[index])
+            }
+            swal({
+              title: 'Pedido editado Exitosamente!',
+              text: '',
+              icon: 'success',
+              button: 'Cerrar',
+            }).then((e) => {
+              this.close()
+              this.refresh()
+            })
           }
         }
       } else {
@@ -146,11 +179,18 @@ export default defineComponent({
             this.addPedidoProducto(this.editedItem.resumen[index])
           }
         }
+        swal({
+          title: 'Pedido creado Exitosamente!',
+          text: '',
+          icon: 'success',
+          button: 'Cerrar',
+        }).then((e) => {
+          this.refresh()
+          this.close()
+        })
       }
-      this.refresh()
-      this.close()
     },
-    refresh() {
+    async refresh() {
       this.$emit('refresh')
     },
     close() {
@@ -158,14 +198,18 @@ export default defineComponent({
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
+        this.deleteComboRefs()
         this.editedIndex = -1
       })
+    },
+    deleteComboRefs() {
+      this.$refs.productoComboRef.pedidosArray = []
     },
     setTotalPedido(data) {
       this.editedItem.totalPagar = data
     },
     setResumen(data) {
-      console.log('resumen',data)
+      console.log('resumen', data)
       if (data.length > 0) {
         this.editedItem.resumen = []
         if (this.editedIndex > -1) {
@@ -187,35 +231,38 @@ export default defineComponent({
             this.editedItem.resumen.push(objeto)
           }
         }
+      } else {
+        this.editedItem.resumen = []
       }
     },
-    onEmptyPedidos(){
+    onEmptyPedidos() {
       this.editedItem.resumen = []
       this.editedItem.totalPagar = 0
-    }
+    },
+    setCurrentDate() {
+      let MyDate = new Date()
+      let date = MyDate.toJSON().slice(0, 10)
+      let cTime = MyDate.toTimeString().split(' ')[0]
+      this.currentDate = date + ' ' + cTime
+      console.log(this.currentDate)
+
+      this.currentDate = this.currentDate.slice(0, -3)
+      console.log(this.currentDate)
+    },
   },
   watch: {
     dialog(newVal, oldVal) {
       if (newVal) {
-        ;(this.editedItem.fechaEntrega = this.fechaEntrega),
-          (this.editedItem.fechaPedido = this.fechaPedido),
-          (this.editedItem.fechaSalida = this.fechaSalida),
-          (this.editedItem.pedidoId = UUID.generate())
+        const dateString = Date.now().toString(36)
+        const randomness = Math.random().toString(36).substr(2)
+        const uniqueId = dateString + randomness
+        console.log(uniqueId)
+        this.editedItem.pedidoId = uniqueId
       }
     },
-    editedItem: {
-      handler(newVal, oldval) {
-        setTimeout(() => {
-          if (newVal.resumen.length == 0) {
-            this.$refs.productoComboRef.pedidosArray = []
-            this.$refs.productoComboRef.totalPorPedido = 0
-            this.$refs.productoComboRef.productoSeleccionado = { nombre: '', precio: '' }
-            this.$refs.productoComboRef.cantidad = ''
-          }
-        }, 500)
-      },
-      deep: true,
-    },
+  },
+  created() {
+    this.setCurrentDate()
   },
 })
 </script>

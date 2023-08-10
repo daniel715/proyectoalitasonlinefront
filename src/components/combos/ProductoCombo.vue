@@ -42,15 +42,26 @@
           </tr>
         </tbody>
       </table>
-      <span style="display: block" v-for="(item, index) in pedidosArray" :key="index">
-        <div class="mr-5">
-          {{ item.nombre || item.producto }}
-          {{ item.cantidad }}
-          <v-btn @click="deleteItem(item)" icon>
-            <v-icon color="red">mdi-delete</v-icon>
-          </v-btn>
-        </div>
-      </span>
+      <table style="width: 100%">
+        <thead>
+          <th class="text-left">Producto</th>
+          <th class="text-left">Cantidad</th>
+          <th class="text-left">Precio</th>
+          <th class="text-left"></th>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in pedidosArray" :key="index">
+            <td class="text-left">{{ item.nombre || item.producto }}</td>
+            <td class="text-left">{{ item.cantidad }}</td>
+            <td class="text-left">{{ item.precio }}</td>
+            <td class="text-left">
+              <v-btn @click="deleteItem(item)" icon>
+                <v-icon color="red">mdi-delete</v-icon>
+              </v-btn>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </v-col>
 
     <v-col cols="3" class="d-flex flex-row mb-5">
@@ -73,7 +84,7 @@ export default defineComponent({
     pedidoproductos: [],
     pedidosArray: [],
     totalPorPedido: 0,
-    isPedidoEmpty: false
+    isPedidoEmpty: false,
   }),
   computed: {
     ...mapGetters(['allProductos', 'allPedidosProductos']),
@@ -82,51 +93,41 @@ export default defineComponent({
     addItem() {
       this.productoSeleccionado.cantidad = this.cantidad
       this.pedidosArray.push(this.productoSeleccionado)
-      this.totalPorPedido = this.totalPorPedido + this.productoSeleccionado.cantidad * this.productoSeleccionado.precio
     },
     deleteItem(item) {
       console.log(item)
       this.pedidosArray = this.pedidosArray.filter((element) => {
         return element.productoId != item.productoId
       })
-      this.totalPorPedido = this.totalPorPedido - item.cantidad * item.precio
     },
   },
   watch: {
     totalPorPedido(newVal, oldVal) {
       if (newVal > 0) {
         this.$emit('input', newVal)
-      }else{
-        this.isPedidoEmpty = true
+      } else {
+        this.$emit('input', 0)
       }
     },
     pedidosArray(newVal, oldVal) {
       if (newVal.length > 0) {
+        this.totalPorPedido = 0
+        newVal.forEach((element) => {
+          this.totalPorPedido = this.totalPorPedido + element.cantidad * element.precio
+        })
+
         this.$emit('itemsSelected', newVal)
-      }else{
-        this.isPedidoEmpty = true
+      } else {
+        this.productoSeleccionado = { nombre: '', precio: '' }
+        this.cantidad = 0
+        this.totalPorPedido = 0
+        this.$emit('itemsSelected', [])
       }
     },
-    isPedidoEmpty(newVal , oldVal){
-      if(newVal){
-        this.$emit('pedidosEmpty')
-      }
-    }
-    // setItems() {
-    //   this.productos.forEach((producto) => {
-    //     this.pedidoproductos.forEach((element) => {
-    //       if (producto.productoId == element.productoId) {
-    //         console.log(element)
-    //         producto['cantidad'] = element.precio
-    //       }
-    //     })
-    //   })
-    // },
   },
   created() {
     this.productos = this.allProductos
     this.pedidoproductos = this.allPedidosProductos
-    // this.setItems()
     console.log(this.productos)
   },
 })

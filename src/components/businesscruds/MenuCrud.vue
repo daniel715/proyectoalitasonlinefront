@@ -1,7 +1,7 @@
 <template>
   <v-card>
-    <v-toolbar color="cyan" dark flat>
-      <v-tabs v-model="tab" align-with-title background-color="cyan" color="white">
+    <v-toolbar color="blue" dark flat>
+      <v-tabs v-model="tab" align-with-title background-color="blue" color="white">
         <v-tabs-slider color="yellow"></v-tabs-slider>
         <v-tab v-for="item in items" :key="item">
           {{ item }}
@@ -17,7 +17,6 @@
         <v-card v-else-if="item == 'menu'">
           <carta-crud />
         </v-card>
-        <!-- <v-card v-else-if="item == 'bebidas'"> <bebidas-crud /> </v-card> -->
         <v-card v-else-if="item == 'combos'"> <combo-crud/> </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -25,12 +24,11 @@
 </template>
 <script>
 import { ref, defineComponent } from '@vue/composition-api'
-import BebidasCrud from './BebidasCrud.vue'
 import CartaCrud from './CartaCrud.vue'
 import CategoriaCrud from './CategoriaCrud.vue'
 import ComboCrud from './ComboCrud.vue'
 export default defineComponent({
-  components: { CategoriaCrud, CartaCrud, BebidasCrud, ComboCrud },
+  components: { CategoriaCrud, CartaCrud, ComboCrud },
   data: () => ({
     tab: null,
     items: ['categorias', 'menu', 'combos'],

@@ -10,29 +10,33 @@
         </v-toolbar>
       </template>
       <template v-slot:item.resumen="{ item }">
-        <!-- {{ item }} -->
-        <!-- <span v-html="item.name"></span> -->
-        <table density="compact">
+        <table class="fixed" density="compact">
           <thead>
             <th class="text-left">Categoria</th>
-            <th class="text-left">producto</th>
-            <th class="text-left">precio</th>
-            <th class="text-left">cantidad</th>
-            <th class="text-left">total</th>
+            <th style="width: 25vw;" class="text-left">Producto</th>
+            <th style="width: 4vw" class="text-left">Precio</th>
+            <th style="width: 4vw" class="text-left">Cantidad</th>
+            <th style="width: 4vw" class="text-left">Total</th>
           </thead>
           <tbody>
             <tr v-for="element in item.resumen" :key="element.id">
-              <td>{{ element.categoria }}</td>
-              <td>{{ element.producto }}</td>
-              <td>{{ element.precio }}</td>
-              <td>{{ element.cantidad }}</td>
-              <td>{{ element.total }}</td>
+              <td >{{ element.categoria }}</td>
+              <td style="width: 25vw;">{{ element.producto }}</td>
+              <td style="width: 4vw">{{ element.precio }}</td>
+              <td style="width: 4vw">{{ element.cantidad }}</td>
+              <td style="width: 4vw">{{ element.total }}</td>
             </tr>
           </tbody>
         </table>
       </template>
       <template v-slot:item.actions="{ item }">
-        <actionButtons @onDelete="deleteItem(item)" @onEdit="editItem(item)" :show-delete="showDelete" :show-edit="showEdit" :showVisor="showVisor" />
+        <actionButtons
+          @onDelete="deleteItem(item)"
+          @onEdit="editItem(item)"
+          :show-delete="showDelete"
+          :show-edit="showEdit"
+          :showVisor="showVisor"
+        />
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="refresh()">Recargar</v-btn>
@@ -44,7 +48,6 @@
 <script>
 import addItemDialog from '@/components/dialogs/AddItemDialog.vue'
 import confirmationDialog from './dialogs/ConfirmationDialog.vue'
-import AddLibroDialog from './AddDialogs/AddLibroDialog.vue'
 import { defineComponent } from '@vue/composition-api'
 import ActionButtons from './actionButtons/ActionButtons.vue'
 export default defineComponent({
@@ -78,7 +81,6 @@ export default defineComponent({
   components: {
     addItemDialog,
     confirmationDialog,
-    AddLibroDialog,
     ActionButtons,
   },
   data: () => ({
@@ -127,12 +129,29 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-th {
-  width: 300px;
+/* th {
+  width: 500px;
   margin: auto;
 }
 td {
-  width: 300px;
+  width: 500px;
   margin: auto;
+} */
+/* table.fixed {
+  table-layout: fixed;
+} 
+
+/* What you need: */
+
+table {
+  width: 50vw;
 }
+
+table td {
+}
+table th {
+}
+/* table thead th {
+  width: 950px;
+} */
 </style>

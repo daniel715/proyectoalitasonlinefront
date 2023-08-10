@@ -78,9 +78,6 @@ export default {
       this.$refs.addDialog.editedIndex = this.editedIndex
       this.setRefs(item)
     },
-    openDialog() {
-      this.$refs.addCategoriaDialog.dialog = true
-    },
     setRefs(item) {
       console.log('REfs', item)
       this.editedItem.nombre = item.nombre

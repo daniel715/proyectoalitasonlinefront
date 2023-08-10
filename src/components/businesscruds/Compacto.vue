@@ -1,3 +1,3 @@
 <template>
-    <h3>Se necesita data</h3>
+    <h3>Faltan datos</h3>
 </template>

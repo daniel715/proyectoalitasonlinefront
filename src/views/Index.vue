@@ -66,11 +66,7 @@
 <script>
 import { ref, defineComponent } from '@vue/composition-api'
 import { mapState } from 'vuex'
-import VisorLibro from '@/components/VisorLibro.vue'
 export default defineComponent({
-  components: {
-    VisorLibro,
-  },
   data: () => ({
     select: [],
     loading: false,

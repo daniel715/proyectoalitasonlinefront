@@ -23,7 +23,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container v-else>
+    <v-container v-else  class="px-0" >
       <tab-crud />
     </v-container>
   </div>
