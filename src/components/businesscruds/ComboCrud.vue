@@ -20,7 +20,7 @@
               @input="setCategoriaId"
               itemText="nombre"
               itemValue="idCategoria"
-              :items="categorias"
+              :items="allCategorias"
               ref="combo"
             />
             <v-select
@@ -90,7 +90,6 @@ export default {
       stock: null,
     },
     editedIndex: -1,
-    productos: [],
     productosSeleccionados: [],
     ganancia: 0,
     precioAcumulado: 0,
@@ -98,6 +97,11 @@ export default {
   }),
   computed: {
     ...mapGetters(['allCategorias', 'allProductos']),
+    productos() {
+      return this.allProductos.map((element) => {
+        if (!element.combo) return element
+      })
+    },
   },
   methods: {
     ...mapActions(['addProducto', 'updateProducto', 'deleteProducto']),
@@ -172,11 +176,6 @@ export default {
         this.select = []
       })
     },
-    setProductos() {
-      this.productos = this.allProductos.map((element) => {
-        if (!element.combo) return element
-      })
-    },
     setPrecioTotal() {
       this.editedItem.precio = 0
       this.editedItem.nombre = ''
@@ -227,7 +226,6 @@ export default {
   },
   created() {
     this.setComboTableItems()
-    this.setProductos()
     this.setCategorias()
   },
 }

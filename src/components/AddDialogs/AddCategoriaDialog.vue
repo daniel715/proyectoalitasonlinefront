@@ -56,7 +56,6 @@ export default defineComponent({
   methods: {
     ...mapActions(['addCategoria', 'updateCategoria']),
     input(data) {
-      console.log(data)
       this.nombre = data
     },
     async save() {

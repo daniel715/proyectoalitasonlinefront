@@ -136,25 +136,12 @@ export default defineComponent({
         let categorias = []
         let object = {}
 
-        // this.allPedidosProductos.forEach((element) => {
-        //   if (element.pedidoId == pedido.pedidoId) {
-        //     productosDePedido.push(element)
-        //   }
-        // })
-
         for (let index = 0; index < this.allPedidosProductos.length; index++) {
           if (this.allPedidosProductos[index].pedidoId == pedido.pedidoId) {
             productosDePedido.push(this.allPedidosProductos[index])
           }
         }
-        console.log('productosDePedido', productosDePedido)
-        // this.allProductos.forEach((producto) => {
-        //   productosDePedido.forEach((element) => {
-        //     if (producto.productoId == element.productoId) {
-        //       productosDePedidoConInfo.push(producto)
-        //     }
-        //   })
-        // })
+
         for (let index1 = 0; index1 < this.allProductos.length; index1++) {
           for (let index2 = 0; index2 < productosDePedido.length; index2++) {
             if (this.allProductos[index1].productoId == productosDePedido[index2].productoId) {
@@ -164,14 +151,6 @@ export default defineComponent({
             }
           }
         }
-
-        // this.allCategorias.forEach((categoria) => {
-        //   productosDePedidoConInfo.forEach((element) => {
-        //     if (element.categoriaId == categoria.idCategoria) {
-        //       categorias.push(categoria)
-        //     }
-        //   })
-        // })
 
         for (let index1 = 0; index1 < this.allCategorias.length; index1++) {
           for (let index2 = 0; index2 < productosDePedidoConInfo.length; index2++) {
@@ -200,6 +179,22 @@ export default defineComponent({
         this.totalVentas = this.totalVentas + pedidos[index].totalPagar
         this.items.push(pedidos[index])
       }
+    },
+  },
+  watch: {
+    allCategorias: {
+      handler(val) {
+        console.log(val)
+        this.setPedidoTableItems()
+      },
+      deep: true,
+    },
+    allProductos: {
+      handler(val) {
+        console.log(val)
+        this.setPedidoTableItems()
+      },
+      deep: true,
     },
   },
   created() {

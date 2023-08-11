@@ -19,7 +19,7 @@
         <v-card v-if="item == 'Pedidos'" flat>
           <pedido-crud />
         </v-card>
-        <v-card v-else-if="item == 'Carta'">
+        <v-card v-else-if="item == 'Menu'">
           <menu-crud />
         </v-card>
         <v-card v-else-if="item == 'Compacto'"> <compacto /> </v-card>
@@ -44,7 +44,7 @@ export default defineComponent({
   },
   data: () => ({
     tab: null,
-    items: ['Pedidos', 'Carta'],
+    items: ['Pedidos', 'Menu'],
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
   }),
   methods: {},

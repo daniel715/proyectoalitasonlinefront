@@ -18,7 +18,7 @@
           @input="setCategoriaId"
           itemText="nombre"
           itemValue="idCategoria"
-          :items="categorias"
+          :items="allCategorias"
           ref="combo"
         />
         <v-text-field outlined v-model="editedItem.nombre" type="text" label="Nombre"></v-text-field>

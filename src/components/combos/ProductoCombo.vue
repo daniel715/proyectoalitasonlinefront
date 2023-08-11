@@ -14,7 +14,7 @@
             <td>
               <v-combobox
                 v-model="productoSeleccionado"
-                :items="productos"
+                :items="allProductos"
                 variant="solo-inverted"
                 item-text="nombre"
                 item-value="productoId"
