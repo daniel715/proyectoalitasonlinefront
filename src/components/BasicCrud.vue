@@ -6,6 +6,11 @@
           <v-toolbar-title>Administrador {{ entidad }}</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-btn class="primary" @click="addItem()">Agregar</v-btn>
+          <div v-if="totalVentas > 0" class="d-flex flex-row">
+            <h2 class="ml-5">Total Ventas</h2>
+            <h2 class="ml-5"> S/ {{ totalVentas }}</h2>
+          </div>
+
           <!-- <v-btn class="primary ml-5" @click="getItems()">Refrescar</v-btn> -->
         </v-toolbar>
       </template>
@@ -64,6 +69,10 @@ export default defineComponent({
     entidad: {
       type: String,
       default: '',
+    },
+    totalVentas: {
+      type: Number,
+      default: 0,
     },
     showVisor: {
       type: Boolean,

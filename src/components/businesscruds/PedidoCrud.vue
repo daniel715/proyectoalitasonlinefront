@@ -11,6 +11,7 @@
       :items="items"
       showDelete
       showEdit
+      :totalVentas="totalVentas"
     />
     <add-pedido-dialog @refresh="refresh" ref="addPedidoDialog" />
   </div>
@@ -58,6 +59,7 @@ export default defineComponent({
       direccionIp: null,
       resumen: [],
     },
+    totalVentas: 0,
   }),
   computed: {
     ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos', 'alltotalPorPedido']),
@@ -119,8 +121,10 @@ export default defineComponent({
       }
     },
     setPedidoTableItems() {
+      this.totalVentas = 0
       let pedidos = []
       this.items = []
+
       this.allPedidos.forEach((element) => {
         pedidos.push(element)
       })
@@ -192,8 +196,8 @@ export default defineComponent({
         pedido['resumen'] = itemResumen
         pedido['vuelto'] = pedido.montoRecibido - pedido.totalPagar
       })
-
       for (let index = 0; index < pedidos.length; index++) {
+        this.totalVentas = this.totalVentas + pedidos[index].totalPagar
         this.items.push(pedidos[index])
       }
     },
