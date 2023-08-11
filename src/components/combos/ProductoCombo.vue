@@ -47,6 +47,7 @@
           <th class="text-left">Producto</th>
           <th class="text-left">Cantidad</th>
           <th class="text-left">Precio</th>
+          <th class="text-left">Total</th>
           <th class="text-left"></th>
         </thead>
         <tbody>
@@ -54,6 +55,7 @@
             <td class="text-left">{{ item.nombre || item.producto }}</td>
             <td class="text-left">{{ item.cantidad }}</td>
             <td class="text-left">{{ item.precio }}</td>
+            <td class="text-left">{{ item.precio * item.cantidad }}</td>
             <td class="text-left">
               <v-btn @click="deleteItem(item)" icon>
                 <v-icon color="red">mdi-delete</v-icon>

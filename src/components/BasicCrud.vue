@@ -13,15 +13,15 @@
         <table class="fixed" density="compact">
           <thead>
             <th class="text-left">Categoria</th>
-            <th style="width: 25vw;" class="text-left">Producto</th>
+            <th style="width: 25vw" class="text-left">Producto</th>
             <th style="width: 4vw" class="text-left">Precio</th>
             <th style="width: 4vw" class="text-left">Cantidad</th>
             <th style="width: 4vw" class="text-left">Total</th>
           </thead>
           <tbody>
             <tr v-for="element in item.resumen" :key="element.id">
-              <td >{{ element.categoria }}</td>
-              <td style="width: 25vw;">{{ element.producto }}</td>
+              <td>{{ element.categoria }}</td>
+              <td style="width: 25vw">{{ element.producto }}</td>
               <td style="width: 4vw">{{ element.precio }}</td>
               <td style="width: 4vw">{{ element.cantidad }}</td>
               <td style="width: 4vw">{{ element.total }}</td>
@@ -129,29 +129,7 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-/* th {
-  width: 500px;
-  margin: auto;
-}
-td {
-  width: 500px;
-  margin: auto;
-} */
-/* table.fixed {
-  table-layout: fixed;
-} 
-
-/* What you need: */
-
 table {
   width: 50vw;
 }
-
-table td {
-}
-table th {
-}
-/* table thead th {
-  width: 950px;
-} */
 </style>

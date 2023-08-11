@@ -35,6 +35,8 @@ export default defineComponent({
       { text: 'Observaciones', value: 'observacion' },
       { text: 'Resumen', value: 'resumen', width: '800px' },
       { text: 'Total', value: 'totalPagar', width: '20px' },
+      { text: 'Monto Recibido', value: 'montoRecibido' },
+      { text: 'Vuelto', value: 'vuelto', width: '20px' },
       { text: 'Acciones', width: '100px', value: 'actions', align: 'end' },
     ],
     items: [],
@@ -88,7 +90,6 @@ export default defineComponent({
         this.$refs.addPedidoDialog.editedItem.metodoPago = item.metodoPago
         this.$refs.addPedidoDialog.editedItem.observacion = item.observacion
         this.$refs.addPedidoDialog.editedItem.montoRecibido = item.montoRecibido
-        this.$refs.addPedidoDialog.editedItem.totalPagar = item.totalPagar
         this.$refs.addPedidoDialog.editedItem.respuestaPagoApp = item.respuestaPagoApp
         this.$refs.addPedidoDialog.editedItem.status = item.status
         this.$refs.addPedidoDialog.editedItem.direccionIp = item.direccionIp
@@ -142,6 +143,7 @@ export default defineComponent({
             productosDePedido.push(this.allPedidosProductos[index])
           }
         }
+        console.log('productosDePedido', productosDePedido)
         // this.allProductos.forEach((producto) => {
         //   productosDePedido.forEach((element) => {
         //     if (producto.productoId == element.productoId) {
@@ -152,7 +154,9 @@ export default defineComponent({
         for (let index1 = 0; index1 < this.allProductos.length; index1++) {
           for (let index2 = 0; index2 < productosDePedido.length; index2++) {
             if (this.allProductos[index1].productoId == productosDePedido[index2].productoId) {
-              productosDePedidoConInfo.push(this.allProductos[index1])
+              let object = this.allProductos[index1]
+              object.cantidad = productosDePedido[index2].cantidad
+              productosDePedidoConInfo.push(object)
             }
           }
         }
@@ -179,13 +183,14 @@ export default defineComponent({
             productoId: productosDePedidoConInfo[i].productoId,
             categoria: categorias[i].nombre,
             producto: productosDePedidoConInfo[i].nombre,
-            cantidad: productosDePedido[i].cantidad,
+            cantidad: productosDePedidoConInfo[i].cantidad,
             precio: productosDePedidoConInfo[i].precio,
-            total: productosDePedidoConInfo[i].precio * productosDePedido[i].cantidad,
+            total: productosDePedidoConInfo[i].precio * productosDePedidoConInfo[i].cantidad,
           }
           itemResumen.push(object)
         }
         pedido['resumen'] = itemResumen
+        pedido['vuelto'] = pedido.montoRecibido - pedido.totalPagar
       })
 
       for (let index = 0; index < pedidos.length; index++) {
