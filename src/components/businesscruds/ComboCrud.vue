@@ -116,7 +116,6 @@ export default {
       })
       resultado.forEach((element) => {
         if (element.combo) {
-          element.nombre = element.nombre.slice(0, -2)
           this.items.push(element)
         }
       })
@@ -126,7 +125,6 @@ export default {
       this.$refs.addDialog.dialog = true
     },
     async save() {
-      // this.editedItem.
       let response = await this.mixinSave(this.editedItem, this.editedIndex)
       if (response.status == '200') {
         console.log('actualizado con exito')
