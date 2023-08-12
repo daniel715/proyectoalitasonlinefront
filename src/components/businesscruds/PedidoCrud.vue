@@ -34,8 +34,8 @@ export default defineComponent({
       { text: 'Direccion', value: 'direccion' },
       { text: 'Metodo Pago', value: 'metodoPago' },
       { text: 'Observaciones', value: 'observacion' },
-      { text: 'Resumen', value: 'resumen', width: '800px' },
-      { text: 'Total', value: 'totalPagar', width: '20px' },
+      { text: 'Resumen', value: 'resumen', width: '100px' },
+      { text: 'Total Del Pedido', value: 'totalPagar', width: '20px' },
       { text: 'Monto Recibido', value: 'montoRecibido' },
       { text: 'Vuelto', value: 'vuelto', width: '20px' },
       { text: 'Acciones', width: '100px', value: 'actions', align: 'end' },
@@ -60,6 +60,7 @@ export default defineComponent({
       resumen: [],
     },
     totalVentas: 0,
+    totalPedido: 0,
   }),
   computed: {
     ...mapGetters(['allPedidos', 'allCategorias', 'allProductos', 'allPedidosProductos', 'alltotalPorPedido']),
@@ -121,9 +122,9 @@ export default defineComponent({
       }
     },
     setPedidoTableItems() {
-      this.totalVentas = 0
       let pedidos = []
       this.items = []
+      this.totalVentas = 0
 
       this.allPedidos.forEach((element) => {
         pedidos.push(element)
@@ -135,6 +136,7 @@ export default defineComponent({
         let productosDePedido = []
         let categorias = []
         let object = {}
+        this.totalPedido = 0
 
         for (let index = 0; index < this.allPedidosProductos.length; index++) {
           if (this.allPedidosProductos[index].pedidoId == pedido.pedidoId) {
@@ -155,16 +157,19 @@ export default defineComponent({
         for (let index1 = 0; index1 < this.allCategorias.length; index1++) {
           for (let index2 = 0; index2 < productosDePedidoConInfo.length; index2++) {
             if (productosDePedidoConInfo[index2].categoriaId == this.allCategorias[index1].idCategoria) {
-              categorias.push(this.allCategorias[index1])
+              // categorias.push(this.allCategorias[index1])
+              productosDePedidoConInfo[index2]['categoria'] = this.allCategorias[index1].nombre
             }
           }
         }
 
         for (let i = 0; i < productosDePedidoConInfo.length; i++) {
+          this.totalPedido =
+            this.totalPedido + productosDePedidoConInfo[i].precio * productosDePedidoConInfo[i].cantidad
           object = {
             pedidoId: pedido.pedidoId,
             productoId: productosDePedidoConInfo[i].productoId,
-            categoria: categorias[i].nombre,
+            categoria: productosDePedidoConInfo[i].categoria,
             producto: productosDePedidoConInfo[i].nombre,
             cantidad: productosDePedidoConInfo[i].cantidad,
             precio: productosDePedidoConInfo[i].precio,
@@ -172,13 +177,16 @@ export default defineComponent({
           }
           itemResumen.push(object)
         }
+        pedido['totalPagar'] = this.totalPedido
         pedido['resumen'] = itemResumen
         pedido['vuelto'] = pedido.montoRecibido - pedido.totalPagar
       })
+
       for (let index = 0; index < pedidos.length; index++) {
         this.totalVentas = this.totalVentas + pedidos[index].totalPagar
         this.items.push(pedidos[index])
       }
+      console.log('items', this.items)
     },
   },
   watch: {

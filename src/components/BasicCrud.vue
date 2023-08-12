@@ -8,7 +8,7 @@
           <v-btn class="primary" @click="addItem()">Agregar</v-btn>
           <div v-if="totalVentas > 0" class="d-flex flex-row">
             <h2 class="ml-5">Total Ventas</h2>
-            <h2 class="ml-5"> S/ {{ totalVentas }}</h2>
+            <h2 class="ml-5">S/ {{ totalVentas }}</h2>
           </div>
 
           <!-- <v-btn class="primary ml-5" @click="getItems()">Refrescar</v-btn> -->
@@ -18,7 +18,7 @@
         <table class="fixed" density="compact">
           <thead>
             <th class="text-left">Categoria</th>
-            <th style="width: 25vw" class="text-left">Producto</th>
+            <th style="width: 20vw" class="text-left">Producto</th>
             <th style="width: 4vw" class="text-left">Precio</th>
             <th style="width: 4vw" class="text-left">Cantidad</th>
             <th style="width: 4vw" class="text-left">Total</th>
@@ -26,7 +26,7 @@
           <tbody>
             <tr v-for="element in item.resumen" :key="element.id">
               <td>{{ element.categoria }}</td>
-              <td style="width: 25vw">{{ element.producto }}</td>
+              <td style="width: 20vw">{{ element.producto }}</td>
               <td style="width: 4vw">{{ element.precio }}</td>
               <td style="width: 4vw">{{ element.cantidad }}</td>
               <td style="width: 4vw">{{ element.total }}</td>
@@ -139,6 +139,6 @@ export default defineComponent({
 </script>
 <style scoped>
 table {
-  width: 50vw;
+  width: 40vw;
 }
 </style>

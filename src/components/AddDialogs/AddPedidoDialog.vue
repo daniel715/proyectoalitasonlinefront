@@ -84,7 +84,6 @@ export default defineComponent({
       metodoPago: 'plin',
       observacion: '',
       montoRecibido: 0,
-      totalPagar: '',
       respuestaPagoApp: null,
       status: null,
       direccionIp: null,
@@ -99,7 +98,6 @@ export default defineComponent({
       metodoPago: 'plin',
       observacion: '',
       montoRecibido: 0,
-      totalPagar: '',
       respuestaPagoApp: null,
       status: null,
       direccionIp: null,
@@ -206,7 +204,7 @@ export default defineComponent({
       this.$refs.productoComboRef.pedidosArray = []
     },
     setTotalPedido(data) {
-      this.editedItem.totalPagar = data
+      // this.editedItem.totalPagar = data
     },
     setResumen(data) {
       console.log('resumen', data)
@@ -237,7 +235,7 @@ export default defineComponent({
     },
     onEmptyPedidos() {
       this.editedItem.resumen = []
-      this.editedItem.totalPagar = 0
+      // this.editedItem.totalPagar = 0
     },
     setCurrentDate() {
       let MyDate = new Date()

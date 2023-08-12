@@ -6,14 +6,14 @@ import app from '@/App.vue'
 Vue.use(VueRouter);
 
 const routes = [
-  {
-    path: '/',
-    name: 'index',
-    component: Index,
-    meta: {
-        layout: "index"
-    }
-  },
+  // {
+  //   path: '/',
+  //   name: 'index',
+  //   component: Index,
+  //   meta: {
+  //       layout: "index"
+  //   }
+  // },
   {
     path: '/admin',
     name: 'admin',
