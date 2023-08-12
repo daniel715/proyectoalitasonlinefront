@@ -143,6 +143,19 @@ export default defineComponent({
         this.$refs.fechaEntregaRef.date = this.currentDate
       }, 100)
     },
+    setCurrentDate() {
+      let MyDate = new Date()
+      let year = MyDate.getFullYear()
+      let month = String(MyDate.getMonth() + 1).padStart(2, '0')
+      let day = MyDate.getDate()
+      let date = year + '-' + month + '-' + day
+
+      let time = MyDate.toTimeString().split(' ')[0]
+      this.currentDate = date + ' ' + time
+
+      this.currentDate = this.currentDate.slice(0, -3)
+      console.log(this.currentDate)
+    },
     async save() {
       console.log(this.editedIndex)
       if (this.editedIndex > -1) {
@@ -235,17 +248,6 @@ export default defineComponent({
     },
     onEmptyPedidos() {
       this.editedItem.resumen = []
-      // this.editedItem.totalPagar = 0
-    },
-    setCurrentDate() {
-      let MyDate = new Date()
-      let date = MyDate.toJSON().slice(0, 10)
-      let cTime = MyDate.toTimeString().split(' ')[0]
-      this.currentDate = date + ' ' + cTime
-      console.log(this.currentDate)
-
-      this.currentDate = this.currentDate.slice(0, -3)
-      console.log(this.currentDate)
     },
   },
   watch: {
